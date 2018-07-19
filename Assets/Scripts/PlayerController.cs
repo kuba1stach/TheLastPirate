@@ -5,17 +5,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     public float speed = 15f;
-
-    float xmin = -5;
-    float xmax = 5;
+    public float padding = 1f;
+    float xmin;
+    float xmax;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        float distance = transform.position.z - Camera.main.transform.position.z;
+        Vector3 leftmost = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, distance));
+        Vector3 rightmost = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, distance));
+        xmin = leftmost.x + padding;
+        xmax = rightmost.x - padding;
+
+        print(distance);
+
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.position += Vector3.right * speed * Time.deltaTime;
