@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    public GameObject CannonBall;
     public float speed = 15f;
     public float padding = 1f;
+
+    public float ballSpeed;
+    public float firingRate;
+
     float xmin;
     float xmax;
 
@@ -17,7 +22,15 @@ public class PlayerController : MonoBehaviour {
         xmin = leftmost.x + padding;
         xmax = rightmost.x - padding;
 
-        print(distance);
+    }
+
+    void Fire()
+    {
+        GameObject ball = Instantiate(CannonBall, new Vector3(transform.position.x, transform.position.y + 0.6f), Quaternion.identity) as GameObject;
+        Rigidbody2D ball_rb = ball.AddComponent<Rigidbody2D>() as Rigidbody2D;
+
+        ball_rb.gravityScale = 0;
+        ball_rb.velocity = new Vector3(0, ballSpeed, 0);
 
     }
 
@@ -32,8 +45,19 @@ public class PlayerController : MonoBehaviour {
             transform.position += Vector3.left * speed * Time.deltaTime;
         }
 
+
         float newX = Mathf.Clamp(transform.position.x, xmin, xmax);
 
         transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            InvokeRepeating("Fire", 0.0001f, firingRate);
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            CancelInvoke("Fire");
+        }
     }
 }
